@@ -1,4 +1,4 @@
-//Programming Porject 2
+//Programming Porject 3
 //Author: Leon Magbanua
 #include <stdio.h>
 #include <string.h>
@@ -54,42 +54,42 @@ void doMath(FILE* reading, char operation[], int reg[], int flags[]){
         fscanf(reading, " %c%i, #%X", &rval1, &registerA, &immediateVal);
         reg[registerA] = immediateVal;
         printf("%s %c%i, #0x%08X \n", operation, rval1, registerA, immediateVal);
-        operationType = 2;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 2;
     }else if((strcmp(operation, "ADDS") == 0)||(strcmp(operation, "adds") == 0)||(strcmp(operation, "ADD") == 0)||(strcmp(operation, "add") == 0)){
         fscanf(reading, " %c%i, %c%i, %c%i", &rval1, &registerA, &rval2, &registerB, &rval3, &registerC);
         reg[registerA] = reg[registerB] + reg[registerC];
         printf("%s %c%i, %c%i, %c%i\n", operation, rval1, registerA, rval2, registerB, rval3, registerC);
-        operationType = 1;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 1;
     }else if((strcmp(operation, "SUBS") == 0)||(strcmp(operation, "subs") == 0)||(strcmp(operation, "SUB") == 0)||(strcmp(operation, "sub") == 0)){
         fscanf(reading, " %c%i, %c%i, %c%i", &rval1, &registerA, &rval2, &registerB, &rval3, &registerC);
         reg[registerA] = reg[registerB] - reg[registerC];
         printf("%s %c%i, %c%i, %c%i\n", operation, rval1, registerA, rval2, registerB, rval3, registerC);
-        operationType = 1;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 1;
     }else if((strcmp(operation, "ANDS") == 0)||(strcmp(operation, "ands") == 0)||(strcmp(operation, "AND") == 0)||(strcmp(operation, "and") == 0)){
         fscanf(reading, " %c%i, %c%i, %c%i", &rval1, &registerA, &rval2, &registerB, &rval3, &registerC);
         reg[registerA] = reg[registerB] & reg[registerC];
         printf("%s %c%i, %c%i, %c%i\n", operation, rval1, registerA, rval2, registerB, rval3, registerC);
-        operationType = 2;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 2;
     }else if((strcmp(operation, "ORRS") == 0)||(strcmp(operation, "orrs") == 0)||(strcmp(operation, "ORR") == 0)||(strcmp(operation, "orr") == 0)){
         fscanf(reading, " %c%i, %c%i, %c%i", &rval1, &registerA, &rval2, &registerB, &rval3, &registerC);
         reg[registerA] = reg[registerB] | reg[registerC];
         printf("%s %c%i, %c%i, %c%i\n", operation, rval1, registerA, rval2, registerB, rval3, registerC);
-        operationType = 2;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 2;
     }else if((strcmp(operation, "XORS") == 0)||(strcmp(operation, "xors") == 0)||(strcmp(operation, "XOR") == 0)||(strcmp(operation, "xor") == 0)){
         fscanf(reading, " %c%i, %c%i, %c%i", &rval1, &registerA, &rval2, &registerB, &rval3, &registerC);
         reg[registerA] = reg[registerB] ^ reg[registerC];
         printf("%s %c%i, %c%i, %c%i\n", operation, rval1, registerA, rval2, registerB, rval3, registerC);
-        operationType = 2;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 2;
     }else if((strcmp(operation, "LSRS") == 0)||(strcmp(operation, "lsrs") == 0)||(strcmp(operation, "LSR") == 0)||(strcmp(operation, "lsr") == 0)){
         fscanf(reading, " %c%i, %c%i, #%i", &rval1, &registerA, &rval2, &registerB, &immediateVal);
-        reg[registerA] = reg[registerB] >> immediateVal;
+        reg[registerA] = ((int)((unsigned int)reg[registerB] >> immediateVal));
         printf("%s %c%i, %c%i, #%i\n", operation, rval1, registerA, rval2, registerB, immediateVal);
-        operationType = 3;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 3;
     }else if((strcmp(operation, "LSLS") == 0)||(strcmp(operation, "lsls") == 0)||(strcmp(operation, "LSL") == 0)||(strcmp(operation, "lsl") == 0)){
         fscanf(reading, " %c%i, %c%i, #%i", &rval1, &registerA, &rval2, &registerB, &immediateVal);
-        reg[registerA] = reg[registerB] << immediateVal;
+        reg[registerA] = ((int)((unsigned int)reg[registerB] << immediateVal));
         printf("%s %c%i, %c%i, #%i\n", operation, rval1, registerA, rval2, registerB, immediateVal);
-        operationType = 3;
+        if((operation[3] == 'S')||(operation[3] == 's')) operationType = 3;
     }else if((strcmp(operation, "CMP") == 0)||(strcmp(operation, "cmp") == 0)){
         fscanf(reading, " %c%i, %c%i", &rval1, &registerA, &rval2, &registerB);
         temp = reg[registerA] - reg[registerB];
@@ -104,8 +104,7 @@ void doMath(FILE* reading, char operation[], int reg[], int flags[]){
         printf("Error! \n");
     }
     //Check Flags
-    if((operation[3] == 'S')||(operation[3] == 's')||(strcmp(operation, "CMP") == 0)||(strcmp(operation, "cmp"))||(strcmp(operation, "TST") == 0)||(strcmp(operation, "tst") == 0)){
-        printf("heck\n");
+    if(operationType != 0){
         switch (operationType){
         case 1:
             if((strcmp(operation, "CMP") == 0)||(strcmp(operation, "cmp") == 0)) checkFlagsArith(flags, operation[0], temp, reg[registerB], reg[registerC]);
@@ -145,6 +144,7 @@ void checkFlagsArith(int flags[], char type, int result, int oper1, int oper2){
         else flags[2] = 0;
     }else{
         if((oper1 < 0x0)&&(oper2 > 0x0)) flags[2] = 1;
+        else if((oper1 & 0xFFFFFFFF)!=(oper2 & 0xFFFFFFFF)) flags[2] = 1;
         else flags[2] = 0;
     }
     if((type == 'A')||(type == 'a')){     //Overflow
